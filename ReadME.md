@@ -1,4 +1,4 @@
-<font size="7"> **Django**</font>
+ **Django**
 # **1.** Python Virtual Enviornment
 Istalling... 
 
