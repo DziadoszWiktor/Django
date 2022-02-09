@@ -1,5 +1,5 @@
  **Django**
-# **1.** Python Virtual Enviornment
+# **1.** Python Virtual Enviornment, basic cmds
 Istalling... 
 
     pip install virtualenv
@@ -16,10 +16,21 @@ Checking... (*should appear our current directory*)
 
     pip -V
 
+Installing dependencies from a requirements.txt file
+
+    pip install -r *filename*.txt
+
 Checking dependencies...
 
     pip freeze
 
+Comment multiple lines in VSCode
+
+    CTRL+K+C
+
+Uncomment multiple lines in VSCode
+
+    CTRL+K+U
 
 # **2.** Creating a new Django project
 Creating a new project...
@@ -204,11 +215,116 @@ We can use that in a shop f.e.
         }
         return render("templates/index.html", my_context)
 
-# **12.** .....
-# **13.** .....
-# **14.** .....
+# **12.** Django Model Forms
+We make a forms.py file in the app(products)
+
+    from django import forms
+    from .models import Product
+
+    class ProductForm(forms.ModelForm):
+        class Meta:
+            model = Product
+            fields = [
+                "title",
+                "description",
+                "price",
+                "summary",
+            ]
+We have to add the form in the views.py
+
+    from urllib import request
+    from django.shortcuts import render
+    from .forms import ProductForm
+    from .models import Product
+
+
+    def product_create_view(reqeust):
+        form = ProductForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            form = ProductForm()
+        context = {
+            "form":form
+        }
+        return render(request, "./products/product_create.html", context)
+
+we make our html page </br>
+
+    {% extends "./base.html" %}
+
+    {% block content %}
+    <div>
+        <form method="POST"> {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Save">
+
+        </form>
+    </div>
+    {% endblock %}
+
+and we add to views.py
+
+    urlpatterns = [
+    path('', home_view, name='home'),
+    path('home/', home_view, name='home'),
+    path('contact/', contact_view, name='contact'),
+    path('create/', product_create_view), #this
+    path('product/', product_detail_view),
+    path('admin/', admin.site.urls),
+    ]
+
+after all modification if we changed models.py we shoudl run (just in case)
+
+    python manage.py makemigrations
+    python manage.py migrate
+
+# **13.** Django Pure Forms
+in forms.py
+
+    #the difference between this and Product form is the forms.Form attribute
+    #that means this is a standard django form
+    class RawProductForm(forms.Form):
+        # in the forms module we don't have textfiled only charfield (modified by models.py)
+        title = forms.CharField()
+        description = forms.CharField()
+        price = MoneyField(
+            decimal_places=2,
+            default=0,
+            default_currency='PLN',
+            max_digits=10,
+        )
+        summary = forms.CharField()
+
+in views.py
+
+    def product_create_view(request):
+    form = RawProductForm()
+    if request == "POST":
+        form = RawProductForm(request.POST or None)
+    context = {
+        "form" : form
+    }
+    return render(request, "./products/product_create.html", context)
+
+# **15.** Validations
+in ProductForm in forms.py
+
+    def validator(self,*args, **kwagrs):
+        title = self.cleaned_data("title")
+        if not "ok" in title:
+            raise forms.ValidationError("nope")
+
+# **16.** Dynamic URL routing
+
+# **17.** .....
+# **18.** .....
+# **19.** .....
+# **20.** .....
+# **21.** .....
+# **22.** .....
+# **23.** .....
 
 
 <br />
-(min 2:07:00 https://youtu.be/F5mRW0jo-U4)
+(min 2:45:00 https://youtu.be/F5mRW0jo-U4)
 
