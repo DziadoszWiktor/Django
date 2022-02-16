@@ -216,7 +216,7 @@ We can use that in a shop f.e.
         return render("templates/index.html", my_context)
 
 # **12.** Django Model Forms
-We make a forms.py file in the app(products)
+We make a forms.py file in the app (products)
 
     from django import forms
     from .models import Product
